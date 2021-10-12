@@ -4,26 +4,71 @@
 // perform the operation
 // display the result of the operation
 
+const LANGUAGE = 'es';
+const MESSAGES = require('./calculator_messages.json');
 const readline = require('readline-sync');
 
-console.log('Welcome to the Calculator!');
-
-let num1 = +readline.question('What is the first number?\n');
-let num2 = +readline.question('What is the second number?\n');
-let operation = readline.question(
-   'What operation would you like to perform?\n1) Add 2) Subtract 3) Multiply 4) Divide\n'
-);
-
-let result;
-
-if (operation === '1') {
-   result = num1 + num2;
-} else if (operation === '2') {
-   result = num1 - num2;
-} else if (operation === '3') {
-   result = num1 * num2;
-} else if (operation === '4') {
-   result = num1 / num2;
+function prompt(key) {
+  const msg = messages(key, LANGUAGE);
+  console.log(`=> ${msg}`);
 }
 
-console.log(`The result is ${result}.`);
+function invalidNumber(num) {
+  return num.trimStart() === '' || Number.isNaN(+num);
+}
+
+function messages(message, lang = 'en') {
+  return MESSAGES[lang][message];
+}
+
+prompt('welcome');
+
+while (true) {
+  prompt('firstNum');
+  let num1 = readline.question();
+
+  while (invalidNumber(num1)) {
+    prompt('invalidNum');
+    num1 = readline.question();
+  }
+
+  prompt('secondNum');
+  let num2 = readline.question();
+
+  while (invalidNumber(num2)) {
+    prompt('invalidNum');
+    num2 = readline.question();
+  }
+
+  prompt('operation');
+  let operation = readline.question();
+
+  while (!['1', '2', '3', '4'].includes(operation)) {
+    prompt('invalidOperation');
+    operation = readline.question();
+  }
+
+  let output;
+
+  switch (operation) {
+    case '1':
+      output = +num1 + +num2;
+      break;
+    case '2':
+      output = +num1 - +num2;
+      break;
+    case '3':
+      output = +num1 * +num2;
+      break;
+    case '4':
+      output = +num1 / +num2;
+      break;
+  }
+
+  console.log(`=> ${messages('result', LANGUAGE)} ${output}.`);
+
+  prompt('again');
+  let response = readline.question();
+
+  if (response !== 'y') break;
+}
