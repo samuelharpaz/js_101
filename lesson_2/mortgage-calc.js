@@ -1,58 +1,87 @@
 const rlSync = require('readline-sync');
 
+const MONTHS_IN_YEAR = 12;
+
 function prompt(msg) {
   console.log(`=> ${msg}`);
 }
 
 function isInvalidNumber(num) {
-  return num.trim() === '' || +num < 0 || Number.isNaN(+num);
+  return num.trim() === '' || Number.isNaN(+num);
 }
 
-prompt('Welcome to the Mortgage Calculator!');
-
-while (true) {
-  // get input info from user
-  prompt('Enter the loan amount:');
+function getLoanAmount() {
+  prompt('Enter the loan amount (without commas or $. e.g. 100000)');
   let loanAmount = rlSync.question();
 
-  while (isInvalidNumber(loanAmount)) {
-    prompt('Must enter a positive number');
+  while (isInvalidNumber(loanAmount) || +loanAmount <= 0) {
+    prompt('Please enter a valid positive number');
     loanAmount = rlSync.question();
   }
 
-  prompt(
-    'Enter the interest rate (annual percentage rate)\ne.g. for 5.5%, input 5.5:'
-  );
+  return loanAmount;
+}
+
+function getAPR() {
+  prompt('Enter the interest rate (annual percentage rate)\ne.g. for 5.5%, input 5.5:');
   let apr = rlSync.question();
 
-  while (isInvalidNumber(apr)) {
-    prompt('Must enter a positive number');
+  while (isInvalidNumber(apr) || apr < 0) {
+    prompt('Please enter either a valid positive number or 0');
     apr = rlSync.question();
   }
 
-  prompt('Input the duration of the loan in years:');
+  return apr;
+}
+
+function getDurationYears() {
+  prompt('What is the duration of the loan in years?');
   let durationYears = rlSync.question();
 
-  while (isInvalidNumber(durationYears)) {
-    prompt('Must enter a positive number');
+  while (
+    isInvalidNumber(durationYears)
+    || +durationYears <= 0
+    || !Number.isInteger(+durationYears)
+  ) {
+    prompt('Please enter a positive integer');
     durationYears = rlSync.question();
   }
 
+  return durationYears;
+}
+
+function getDurationMonths() {
+  prompt('Input any additional months of loan duration: (enter 0 if not applicable)');
+  let durationMonths = rlSync.question();
+
+  while (
+    isInvalidNumber(durationMonths)
+    || +durationMonths < 0
+    || !Number.isInteger(+durationMonths)
+  ) {
+    prompt('Please enter a positive integer (or 0 if not applicable)');
+    durationMonths = rlSync.question();
+  }
+
+  return durationMonths;
+}
+
+function calcMonthlyPayment(loanAmount, apr, months) {
   // calculate based on user input
   const annualInterestRate = +apr / 100;
-  const monthlyInterestRate = annualInterestRate / 12;
-  const durationMonths = +durationYears * 12;
+  const monthlyInterestRate = annualInterestRate / MONTHS_IN_YEAR;
 
-  // calculate monthly payment
-  const monthlyPayment =
-    +loanAmount *
-    (monthlyInterestRate /
-      (1 - Math.pow(1 + monthlyInterestRate, -durationMonths)));
+  if (+apr === 0) {
+    return +loanAmount / months;
+  } else {
+    return +loanAmount *
+      (monthlyInterestRate / (1 - Math.pow(1 + monthlyInterestRate, -months)));
+  }
+}
 
-  prompt(`Your monthly payment is $${monthlyPayment.toFixed(2)}`);
-
+function getRunAgainResponse() {
   console.log('---------------------------------------');
-  prompt('Would you like to perform another calculation? (enter y or n)');
+  prompt('Would you like to perform another loan calculation? (enter y or n)');
   let response = rlSync.question().toLowerCase();
 
   while (response !== 'y' && response !== 'n') {
@@ -60,5 +89,27 @@ while (true) {
     response = rlSync.question().toLowerCase();
   }
 
+  return response;
+}
+
+console.clear();
+prompt('Welcome to the Mortgage Calculator!');
+
+while (true) {
+  // get input info from user
+  const loanAmount = getLoanAmount();
+  const apr = getAPR();
+  const durationYears = getDurationYears();
+  const durationMonths = getDurationMonths();
+
+  const totalMonths = (+durationYears * MONTHS_IN_YEAR) + +durationMonths;
+
+  // calculate monthly payment
+  const monthlyPayment = calcMonthlyPayment(loanAmount, apr, totalMonths);
+  prompt(`Your monthly payment would be $${monthlyPayment.toFixed(2)} for ${totalMonths} months`);
+
+  const response = getRunAgainResponse();
   if (response !== 'y') break;
+  // clear console for new calculation
+  console.clear();
 }

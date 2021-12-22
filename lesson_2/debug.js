@@ -7,5 +7,3 @@ while (counter <= 5) {
   debugger;
   counter += 1;
 }
-
-hello();

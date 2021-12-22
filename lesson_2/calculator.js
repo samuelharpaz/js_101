@@ -1,29 +1,24 @@
-// ask the user for the first number
-// ask the user for the second number
-// ask the user for the operation
-// perform the operation
-// display the result of the operation
-
-const LANGUAGE = 'es';
 const MESSAGES = require('./calculator_messages.json');
+const LANGUAGE = 'en';
+
 const readline = require('readline-sync');
 
-function prompt(key) {
-  const msg = messages(key, LANGUAGE);
-  console.log(`=> ${msg}`);
+function prompt(msg) {
+  console.log(`=> ${getMsg(msg)}`);
 }
 
 function invalidNumber(num) {
   return num.trimStart() === '' || Number.isNaN(+num);
 }
 
-function messages(message, lang = 'en') {
-  return MESSAGES[lang][message];
+function getMsg(msg, lang = LANGUAGE) {
+  return MESSAGES[lang][msg];
 }
 
 prompt('welcome');
 
 while (true) {
+  // get first number (and validate)
   prompt('firstNum');
   let num1 = readline.question();
 
@@ -32,6 +27,7 @@ while (true) {
     num1 = readline.question();
   }
 
+  // get 2nd number (and validate)
   prompt('secondNum');
   let num2 = readline.question();
 
@@ -40,6 +36,7 @@ while (true) {
     num2 = readline.question();
   }
 
+  // get requested operation (and validate)
   prompt('operation');
   let operation = readline.question();
 
@@ -48,27 +45,30 @@ while (true) {
     operation = readline.question();
   }
 
-  let output;
+
+  // perform calculation
+  let result;
 
   switch (operation) {
     case '1':
-      output = +num1 + +num2;
+      result = +num1 + +num2;
       break;
     case '2':
-      output = +num1 - +num2;
+      result = +num1 - +num2;
       break;
     case '3':
-      output = +num1 * +num2;
+      result = +num1 * +num2;
       break;
     case '4':
-      output = +num1 / +num2;
+      result = +num1 / +num2;
       break;
   }
 
-  console.log(`=> ${messages('result', LANGUAGE)} ${output}.`);
+  // display result to user
+  prompt(`${'result'} ${result}`);
 
   prompt('again');
-  let response = readline.question();
+  const response = readline.question();
 
-  if (response !== 'y') break;
+  if (response[0].toLowerCase() !== 'y') break;
 }
