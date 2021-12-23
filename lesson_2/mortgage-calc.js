@@ -67,7 +67,6 @@ function getDurationMonths() {
 }
 
 function calcMonthlyPayment(loanAmount, apr, months) {
-  // calculate based on user input
   const annualInterestRate = +apr / 100;
   const monthlyInterestRate = annualInterestRate / MONTHS_IN_YEAR;
 
@@ -96,7 +95,6 @@ console.clear();
 prompt('Welcome to the Mortgage Calculator!');
 
 while (true) {
-  // get input info from user
   const loanAmount = getLoanAmount();
   const apr = getAPR();
   const durationYears = getDurationYears();
@@ -104,12 +102,12 @@ while (true) {
 
   const totalMonths = (+durationYears * MONTHS_IN_YEAR) + +durationMonths;
 
-  // calculate monthly payment
   const monthlyPayment = calcMonthlyPayment(loanAmount, apr, totalMonths);
   prompt(`Your monthly payment would be $${monthlyPayment.toFixed(2)} for ${totalMonths} months`);
 
   const response = getRunAgainResponse();
   if (response !== 'y') break;
-  // clear console for new calculation
   console.clear();
 }
+
+prompt('Thanks for using the Mortgage Calculator!')
