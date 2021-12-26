@@ -142,7 +142,7 @@ const welcome = function() {
   console.clear();
 
   prompt('Welcome to Rock Paper Scissors Lizard Spock!');
-  prompt(`First to win ${NUM_ROUNDS} rounds wins the game`)
+  prompt(`First to win ${NUM_ROUNDS} rounds wins the game`);
   console.log('-----------------------------------------');
   prompt('Press Enter to begin...');
   readline.question();
