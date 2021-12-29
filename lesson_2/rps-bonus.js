@@ -25,6 +25,9 @@ const CHOICES = {
 
 const choicesFull = Object.keys(CHOICES);
 const choicesAbbrev = Object.values(CHOICES).map(choice => choice.abbrev);
+const choicesArr = Object.entries(CHOICES).map(([choice, value]) => {
+  return [choice, value.abbrev];
+});
 const NUM_ROUNDS = 5;
 
 
@@ -44,12 +47,23 @@ const logSpace = function(lines = 1) {
   }
 };
 
-const getUserChoice = function() {
+const expandAbbrevChoice = function(choice) {
+  const idx = choicesArr.findIndex(([_, abbrev]) => abbrev === choice);
+  return choicesArr[idx][0];
+};
+
+const getChoicesStr = function() {
   let choicesStr = 'Enter ';
-  choicesAbbrev.forEach((el, idx) => {
-    choicesStr += `"${el}" for ${choicesFull[idx]}, `;
+
+  choicesArr.forEach(([choice, abbrev]) => {
+    choicesStr += `"${abbrev}" for ${choice}, `;
   });
-  choicesStr = choicesStr.slice(0, -2);
+
+  return choicesStr.slice(0, -2);
+};
+
+const getUserChoice = function() {
+  const choicesStr = getChoicesStr();
 
   prompt(`Choose one: ${choicesFull.join(', ')}\n(${choicesStr})`);
   let choice = readline.question().toLowerCase();
@@ -59,9 +73,8 @@ const getUserChoice = function() {
     choice = readline.question().toLowerCase();
   }
 
-  if (choicesAbbrev.includes(choice)) {
-    const idx = choicesAbbrev.indexOf(choice);
-    choice = choicesFull[idx];
+  if (choicesArr.some(([_, abbrev]) => abbrev === choice)) {
+    choice = expandAbbrevChoice(choice);
   }
 
   return choice;
@@ -112,16 +125,15 @@ const displayScore = function() {
   logSpace();
 };
 
-const checkGameWinner = function() {
+const gameWasWon = function() {
+  return userScore >= NUM_ROUNDS || computerScore >= NUM_ROUNDS;
+};
+
+const displayGameWinner = function() {
   if (userScore >= NUM_ROUNDS) {
     prompt('You win!!!');
-    gameOver = !gameOver;
   } else if (computerScore >= NUM_ROUNDS) {
     prompt('Computer wins! :(');
-    gameOver = !gameOver;
-  } else {
-    prompt('Press Enter to play next round');
-    readline.question();
   }
 };
 
@@ -139,7 +151,7 @@ const getPlayAgain = function() {
 };
 
 const welcome = function() {
-  console.clear();
+  // console.clear();
 
   prompt('Welcome to Rock Paper Scissors Lizard Spock!');
   prompt(`First to win ${NUM_ROUNDS} rounds wins the game`);
@@ -177,7 +189,13 @@ while (true) {
     logSpace();
     displayScore();
 
-    checkGameWinner();
+    if (gameWasWon()) {
+      gameOver = !gameOver;
+      displayGameWinner();
+    } else {
+      prompt('Press Enter to play next round');
+      readline.question();
+    }
   }
 
   const response = getPlayAgain();
