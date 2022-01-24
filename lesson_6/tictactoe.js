@@ -1,11 +1,12 @@
 const readline = require('readline-sync');
 
-const GAME_WINS_PER_MATCH = 2;
+const GAME_WINS_PER_MATCH = 5;
 const INITIAL_MARKER = ' ';
 const HUMAN_MARKER = 'X';
 const COMPUTER_MARKER = 'O';
 const MIDDLE_SQUARE = '5';
 const PLAYS_FIRST = 'choose';
+const HORIZONTAL_SPACE = 13;
 
 const WINNING_ROWS = [
   ['1', '2', '3'], ['4', '5', '6'], ['7', '8', '9'], // rows
@@ -23,6 +24,10 @@ function addVerticalSpace(num = 1) {
   }
 }
 
+function logWithSpace(text, spaceLength) {
+  console.log(`${''.padStart(spaceLength)}${text}`);
+}
+
 function joinOr(arr, connector = ', ', last = 'or') {
   if (arr.length <= 1) return arr.join();
 
@@ -32,19 +37,19 @@ function joinOr(arr, connector = ', ', last = 'or') {
 
 
 function displayBoard(board) {
-  console.log('');
-  console.log('     |     |');
-  console.log(`  ${board['1']}  |  ${board['2']}  |  ${board['3']}`);
-  console.log('     |     |');
-  console.log('-----+-----+-----');
-  console.log('     |     |');
-  console.log(`  ${board['4']}  |  ${board['5']}  |  ${board['6']}`);
-  console.log('     |     |');
-  console.log('-----+-----+-----');
-  console.log('     |     |');
-  console.log(`  ${board['7']}  |  ${board['8']}  |  ${board['9']}`);
-  console.log('     |     |');
-  console.log('');
+  logWithSpace('', HORIZONTAL_SPACE);
+  logWithSpace('     |     |', HORIZONTAL_SPACE);
+  logWithSpace(`  ${board['1']}  |  ${board['2']}  |  ${board['3']}`, HORIZONTAL_SPACE);
+  logWithSpace('     |     |', HORIZONTAL_SPACE);
+  logWithSpace('-----+-----+-----', HORIZONTAL_SPACE);
+  logWithSpace('     |     |', HORIZONTAL_SPACE);
+  logWithSpace(`  ${board['4']}  |  ${board['5']}  |  ${board['6']}`, HORIZONTAL_SPACE);
+  logWithSpace('     |     |', HORIZONTAL_SPACE);
+  logWithSpace('-----+-----+-----', HORIZONTAL_SPACE);
+  logWithSpace('     |     |', HORIZONTAL_SPACE);
+  logWithSpace(`  ${board['7']}  |  ${board['8']}  |  ${board['9']}`, HORIZONTAL_SPACE);
+  logWithSpace('     |     |', HORIZONTAL_SPACE);
+  logWithSpace('', HORIZONTAL_SPACE);
 }
 
 function initializeBoard() {
@@ -236,8 +241,13 @@ function someoneWonMatch(scores) {
 
 function displayScores({ player, computer }, withBorder = false) {
   if (withBorder) {
+    console.clear();
+
+    console.log(`|         (First to ${GAME_WINS_PER_MATCH} points wins)        |`);
+    console.log('|                                         |');
     console.log(`|    Player (X): ${player}  |  Computer (O): ${computer}    |`);
     console.log('*******************************************');
+    addVerticalSpace();
   } else {
     console.log(`Player (X): ${player}  |  Computer (O): ${computer}`);
   }
@@ -266,6 +276,11 @@ function welcomeMsg() {
   readline.question('Press Enter/Return to continue...');
 }
 
+function promptNextRound() {
+  prompt('Press Enter/Return to play next round...');
+  readline.question();
+}
+
 welcomeMsg();
 
 while (true) {
@@ -278,7 +293,6 @@ while (true) {
     const board = initializeBoard();
 
     while (true) {
-      console.clear();
       displayScores(scores, true);
       displayBoard(board);
       addVerticalSpace();
@@ -288,6 +302,7 @@ while (true) {
 
       currentPlayer = alternatePlayer(currentPlayer);
     }
+
     console.clear();
     displayBoard(board);
 
@@ -308,8 +323,7 @@ while (true) {
 
     firstPlayer = alternatePlayer(firstPlayer);
 
-    prompt('Press Enter/Return to play next round...');
-    readline.question();
+    promptNextRound();
   }
 
   let response = playAgain();
