@@ -17,8 +17,10 @@ function prompt(msg) {
   console.log(`=> ${msg}`);
 }
 
-function addVerticalSpace() {
-  console.log('');
+function addVerticalSpace(num = 1) {
+  for (let count = 1; count <= num; count++) {
+    console.log('');
+  }
 }
 
 function joinOr(arr, connector = ', ', last = 'or') {
@@ -304,8 +306,7 @@ while (true) {
     displayScores(scores);
     addVerticalSpace();
 
-    firstPlayer = firstPlayer === 'player' ? 'computer' : 'player';
-    currentPlayer = firstPlayer;
+    firstPlayer = alternatePlayer(firstPlayer);
 
     prompt('Press Enter/Return to play next round...');
     readline.question();
