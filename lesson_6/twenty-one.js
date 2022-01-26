@@ -90,6 +90,12 @@ function calcTotal(cards) {
     }
   });
 
+  sum = adjustAces(values, sum);
+
+  return sum;
+}
+
+function adjustAces(values, sum) {
   values.filter(val => val === 'A').forEach(_ => {
     if (sum > MAX_SCORE) sum -= 10;
   });
@@ -259,7 +265,7 @@ function welcomeMsg() {
 
 function newMatchMsg() {
   clear();
-  prompt(`Get ready for a new match. First to win ${WINS_PER_MATCH} rounds wins match.`)
+  prompt(`Get ready for a new match. First to win ${WINS_PER_MATCH} rounds wins match.`);
   prompt('Press Enter to begin...');
   readline.question();
 }
@@ -323,7 +329,7 @@ while (true) { // match
     addVerticalSpace();
 
     prompt('Dealer turn:');
-    console.log(`Dealer's cards are: ${hand(dealerCards)}`);
+    console.log(`Dealer's cards are: ${hand(dealerCards)} (Current total: ${dealerTotal})`);
 
     // dealer turn
     while (calcTotal(dealerCards) < DEALER_CUTOFF) {
