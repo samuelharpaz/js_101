@@ -1,9 +1,7 @@
 const readline = require('readline-sync');
 
-const {MAX_SCORE, GAME_NAME} = {
-  MAX_SCORE: 21,
-  GAME_NAME: 'Twenty-One'
-};
+const MAX_SCORE = 21;
+const GAME_NAME = 'Twenty-One';
 const DEALER_CUTOFF = 17;
 const WINS_PER_MATCH = 5;
 const RANKS = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
@@ -50,13 +48,13 @@ function initializeDeck() {
 }
 
 function dealCard(deck) {
-  return deck.shift();
+  return deck.pop();
 }
 
 function dealCards(deck, num) {
   const cards = [];
   for (let count = 1; count <= num; count++) {
-    cards.push(deck.shift());
+    cards.push(dealCard(deck));
   }
 
   return cards;
@@ -71,7 +69,7 @@ function getCardName({suit, rank}) {
 
 function displayInitialCards(dealer, player, playerTotal) {
   console.log(`Dealer has: ${getCardName(dealer[1])} and ?`);
-  console.log(`You have: ${getCardName(player[0])} and ${getCardName(player[1])} (Total: ${playerTotal})`);
+  console.log(`You have: ${getCardName(player[0])} and ${getCardName(player[1])} (Current total: ${playerTotal})`);
 }
 
 function busted(total) {
@@ -112,8 +110,7 @@ function addNewCard(deck, cards) {
 function displayCurrent(cards, total, name) {
   const prefix = name === 'player' ? 'Your' : "Dealer's";
 
-  console.log(`${prefix} cards are now: ${hand(cards)}`);
-  console.log(`${prefix} current total is ${total}`);
+  console.log(`${prefix} cards are now: ${hand(cards)} (Current total: ${total})`);
   addVerticalSpace();
 }
 
@@ -191,13 +188,6 @@ function playAgain() {
   return ['y', 'yes'].includes(response);
 }
 
-function welcomeMsg() {
-  clear();
-  prompt(`Welcome to ${GAME_NAME}! Fastest to ${WINS_PER_MATCH} points wins match.`);
-  prompt('Press Enter/Return to play...');
-  readline.question();
-}
-
 function initializeScores() {
   return {
     player: 0,
@@ -250,13 +240,27 @@ function displayMatchResults(scores) {
   console.log('************************************');
   let resultStr = winner === 'Player' ? 'You win' : 'Dealer wins';
   resultStr += ' the match!!!';
-  const emoji = winner === 'Player' ? '😀' : '😥';
+  const emoji = winner === 'Player' ? '😎' : '😥';
   console.log(`${resultStr} ${emoji}`);
   addVerticalSpace();
 }
 
 function promptNextRound() {
-  prompt('Press Enter/Return to proceed to next round...');
+  prompt('Press Enter to proceed to next round...');
+  readline.question();
+}
+
+function welcomeMsg() {
+  clear();
+  prompt(`Welcome to ${GAME_NAME}!`);
+  prompt('Press Enter to continue...');
+  readline.question();
+}
+
+function newMatchMsg() {
+  clear();
+  prompt(`Get ready for a new match. First to win ${WINS_PER_MATCH} rounds wins match.`)
+  prompt('Press Enter to begin...');
   readline.question();
 }
 
@@ -264,11 +268,12 @@ function promptNextRound() {
 // Game
 welcomeMsg();
 
-while (true) {
+while (true) { // match
   const scores = initializeScores();
   let round = 1;
+  newMatchMsg();
 
-  while (true) {
+  while (true) { // round
     clear();
     displayScores(scores, round, true);
     displayKey();
@@ -284,7 +289,7 @@ while (true) {
     displayInitialCards(dealerCards, playerCards, playerTotal);
     addVerticalSpace();
 
-    // player loop
+    // player turn
     while (true) {
       let response = promptHitStay();
       if (response === 's') break;
@@ -320,7 +325,7 @@ while (true) {
     prompt('Dealer turn:');
     console.log(`Dealer's cards are: ${hand(dealerCards)}`);
 
-    // dealer loop
+    // dealer turn
     while (calcTotal(dealerCards) < DEALER_CUTOFF) {
       addVerticalSpace();
       prompt('Dealer hits');
