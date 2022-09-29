@@ -47,6 +47,10 @@ const logSpace = function(lines = 1) {
   }
 };
 
+const capitalize = function(word) {
+  return word[0].toUpperCase() + word.toLowerCase().slice(1);
+};
+
 const expandAbbrevChoice = function(choice) {
   const idx = choicesArr.findIndex(([_, abbrev]) => abbrev === choice);
   return choicesArr[idx][0];
@@ -151,9 +155,9 @@ const getPlayAgain = function() {
 };
 
 const welcome = function() {
-  // console.clear();
+  console.clear();
 
-  prompt('Welcome to Rock Paper Scissors Lizard Spock!');
+  prompt(`Welcome to ${choicesFull.map(choice => capitalize(choice)).join(' ')}!`);
   prompt(`First to win ${NUM_ROUNDS} rounds wins the game`);
   console.log('-----------------------------------------');
   prompt('Press Enter to begin...');
