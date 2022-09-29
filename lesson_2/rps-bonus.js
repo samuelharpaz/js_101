@@ -174,40 +174,40 @@ const resetGame = function() {
 // Game
 welcome();
 
-while (true) {
-  while (!gameOver) {
-    console.clear();
-    displayScore();
+// while (true) {
+//   while (!gameOver) {
+//     console.clear();
+//     displayScore();
 
-    const choice = getUserChoice();
-    const computerChoice = getComputerChoice();
+//     const choice = getUserChoice();
+//     const computerChoice = getComputerChoice();
 
-    displayUserChoice(choice);
-    displayComputerChoice(computerChoice);
+//     displayUserChoice(choice);
+//     displayComputerChoice(computerChoice);
 
-    const roundWinner = calcRoundWinner(choice, computerChoice);
+//     const roundWinner = calcRoundWinner(choice, computerChoice);
 
-    updateScore(roundWinner);
-    displayRoundWinner(roundWinner);
+//     updateScore(roundWinner);
+//     displayRoundWinner(roundWinner);
 
-    logSpace();
-    displayScore();
+//     logSpace();
+//     displayScore();
 
-    if (gameWasWon()) {
-      gameOver = !gameOver;
-      displayGameWinner();
-    } else {
-      prompt('Press Enter to play next round');
-      readline.question();
-    }
-  }
+//     if (gameWasWon()) {
+//       gameOver = !gameOver;
+//       displayGameWinner();
+//     } else {
+//       prompt('Press Enter to play next round');
+//       readline.question();
+//     }
+//   }
 
-  const response = getPlayAgain();
+//   const response = getPlayAgain();
 
-  if (response === 'n' || response === 'no') {
-    prompt('Thanks for playing!');
-    break;
-  } else {
-    resetGame();
-  }
-}
+//   if (response === 'n' || response === 'no') {
+//     prompt('Thanks for playing!');
+//     break;
+//   } else {
+//     resetGame();
+//   }
+// }
