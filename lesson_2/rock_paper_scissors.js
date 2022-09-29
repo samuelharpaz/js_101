@@ -40,12 +40,15 @@ while (true) {
     choice = readline.question();
   }
 
+  logSpace();
+  prompt(`You chose ${choice}`);
+
   const randomIdx = Math.floor(Math.random() * CHOICES.length);
   const computerChoice = CHOICES[randomIdx];
 
-  logSpace();
   prompt(`The computer chose ${computerChoice}`);
 
+  logSpace();
   displayWinner(choice, computerChoice);
 
   logSpace();
@@ -57,7 +60,7 @@ while (true) {
     response = readline.question().toLowerCase();
   }
 
-  if (response === 'y' || response === 'yes') {
+  if (['y', 'yes'].includes(response)) {
     console.clear();
   } else {
     prompt('Thanks for playing!');
